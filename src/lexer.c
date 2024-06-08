@@ -26,26 +26,29 @@ void lexer_skip_whitespace(lexer_T* lexer){
 
 token_T* lexer_get_next_token(lexer_T* lexer){
     while (lexer->c != '\0' && lexer->i < strlen(lexer->contents)){
-        while (lexer->c == ' ' || lexer->c == 10){
+        if (lexer->c == ' ' || lexer->c == 10)
             lexer_skip_whitespace(lexer);
-    }
-    switch (lexer->c){
-    case '=':
-        return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
-        break;
-    case ';':
-        return lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer)));
-        break;
-    case '(':
-        return lexer_advance_with_token(lexer, init_token(TOKEN_LPAREN, lexer_get_current_char_as_string(lexer)));
-        break;
-    case ')':
-        return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
-        break;
-    
-    default:
-        break;
-    }
+            
+        if (lexer->c == '"')
+            return lexer_collect_string(lexer);
+
+        switch (lexer->c){
+        case '=':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_EQUALS, lexer_get_current_char_as_string(lexer)));
+            break;
+        case ';':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_SEMI, lexer_get_current_char_as_string(lexer)));
+            break;
+        case '(':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_LPAREN, lexer_get_current_char_as_string(lexer)));
+            break;
+        case ')':
+            return lexer_advance_with_token(lexer, init_token(TOKEN_RPAREN, lexer_get_current_char_as_string(lexer)));
+            break;
+        
+        default:
+            break;
+        }
     }
 }
 
