@@ -1,5 +1,6 @@
 #include "include/parser.h"
 #include <stdio.h>
+#include <string.h>
 
 parser_T* init_parser(lexer_T* lexer){
     parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
@@ -28,6 +29,13 @@ AST_T* parser_parse(parser_T* parser){
 
 AST_T* parser_parse_statement(parser_T* parser){
 
+    switch (parser->current_token->type)
+    {
+    case TOKEN_ID: return parser_parse_id(parser);
+    
+    default:
+        break;
+    }
 }
 
 AST_T* parser_parse_statements(parser_T* parser){
@@ -36,9 +44,6 @@ AST_T* parser_parse_statements(parser_T* parser){
 
     AST_T* ast_statement = parser_parse_statement(parser);
     compound->compound_value[0] = ast_statement;
-    compound->compound_size += 1;
-
-
 
     while(parser->current_token->type == TOKEN_SEMI){
         parser_eat(parser, TOKEN_SEMI);
@@ -67,10 +72,34 @@ AST_T* parser_parse_function_call(parser_T* parser){
 
 }
 
+AST_T* parser_parse_variable_definition(parser_T* parser){
+
+    parser_eat(parser, TOKEN_ID); //var
+    char* variable_definition_variable_name = parser->current_token->value;
+    parser_eat(parser, TOKEN_ID); //var name
+    parser_eat(parser, TOKEN_EQUALS);
+    AST_T* variable_definition_value = parser_parse_expr(parser);
+
+    AST_T* variable_definition = init_ast(AST_VARIABLE_DEFINITION);
+    variable_definition->variable_definition_variable_name = variable_definition_variable_name;
+    variable_definition->variable_definition_value = variable_definition_value;
+
+    return variable_definition;
+}
+
 AST_T* parser_parse_variable(parser_T* parser){
 
 }
 
 AST_T* parser_parse_string(parser_T* parser){
 
+}
+
+AST_T* parser_parse_id(parser_T* parser){
+    if (strcmp(parser->current_token->value, "var") == 0){
+        return parser_parse_variable_definition(parser);
+    }
+    else{
+        return parser_parse_variable(parser);
+    }
 }
