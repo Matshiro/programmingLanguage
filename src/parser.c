@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// asdxd
 parser_T* init_parser(lexer_T* lexer){
     parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
     parser->lexer = lexer;
@@ -58,7 +57,9 @@ AST_T* parser_parse_statements(parser_T* parser){
 }
 
 AST_T* parser_parse_expr(parser_T* parser){
-
+    switch(parser->current_token->type){
+        case TOKEN_STRING: return parser_parse_string(parser);
+    }
 }
 
 AST_T* parser_parse_factor(parser_T* parser){
@@ -101,7 +102,12 @@ AST_T* parser_parse_variable(parser_T* parser){
 }
 
 AST_T* parser_parse_string(parser_T* parser){
+    AST_T* ast_string = init_ast(AST_STRING);
+    ast_string->string_value = parser->current_token->value;
 
+    parser_eat(parser, TOKEN_STRING);
+
+    return ast_string;
 }
 
 AST_T* parser_parse_id(parser_T* parser){
