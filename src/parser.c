@@ -6,12 +6,13 @@ parser_T* init_parser(lexer_T* lexer){
     parser_T* parser = calloc(1, sizeof(struct PARSER_STRUCT));
     parser->lexer = lexer;
     parser->current_token = lexer_get_next_token(lexer);
-
+    parser->previous_token = parser->current_token;
     return parser;
 }
 
 void parser_eat(parser_T* parser, int token_type){
     if(parser->current_token->type == token_type){
+        parser->previous_token = parser->current_token;
         parser->current_token = lexer_get_next_token(parser->lexer);
     }
     else{
@@ -71,7 +72,9 @@ AST_T* parser_parse_term(parser_T* parser){
 }
 
 AST_T* parser_parse_function_call(parser_T* parser){
-
+    AST_T* function_call = init_ast(AST_FUNCTION_CALL);
+    function_call->funcion_call_name = parser->previous_token->value;
+    
 }
 
 AST_T* parser_parse_variable_definition(parser_T* parser){
