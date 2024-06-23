@@ -18,3 +18,4 @@ int main(int argc, char* argv[]){
 }
 
 // test czy działa clone
+// gówno żeby było bo nie myśle i mam mało czasu
