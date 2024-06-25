@@ -17,5 +17,3 @@ int main(int argc, char* argv[]){
     return 0;
 }
 
-// test czy działa clone
-// gówno żeby było bo nie myśle i mam mało czasu

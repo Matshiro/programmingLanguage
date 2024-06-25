@@ -25,5 +25,3 @@ AST_T* init_ast(int type){
 
     return ast;
 }
-
-//test na pc
